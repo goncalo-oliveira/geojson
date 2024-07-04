@@ -1,0 +1,6 @@
+# Mac OS X Finder
+.DS_Store/
+
+# .NET compiled files
+**/bin/
+**/obj/

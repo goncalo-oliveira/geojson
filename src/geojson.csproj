@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Faactory.Types.GeoJson</RootNamespace>
+    <LangVersion>default</LangVersion>
+
+    <PackageId>Faactory.Types.GeoJson</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Goncalo Oliveira</Authors>
+    <Description>GeoJSON types for .NET</Description>
+    <RepositoryUrl>https://github.com/goncalo-oliveira/geojson</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>faactory.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../README.md" Pack="true" PackagePath="/" />
+    <None Include="../faactory.png" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project>
