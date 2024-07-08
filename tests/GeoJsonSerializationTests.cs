@@ -311,6 +311,40 @@ public class GeoJsonSerializationTests
     [Theory]
     [InlineData( 2 )]
     [InlineData( 3 )]
+    public void CanRoundTripFeatureWithId( int _points )
+    {
+        var p = new PositionHelper( _points );
+
+        var input = $"{{ \"type\": \"Feature\", \"geometry\": {{ \"type\": \"Point\", \"coordinates\": [{p.PS(0)}] }}, \"properties\": {{ \"name\": \"value\" }}, \"id\": \"1\" }}";
+
+        var feature = AssertRoundTrip<GeoFeature>( input );
+        var point = Assert.IsType<GeoPoint>( feature.Geometry );
+
+        Assert.Equal( p.P(0), point.Coordinates );
+        Assert.Equal( "value", feature.Properties["name"] );
+        Assert.Equal( "1", feature.Id );
+    }
+
+    [Theory]
+    [InlineData( 2 )]
+    [InlineData( 3 )]
+    public void CanRoundTripFeatureWithNumberId( int _points )
+    {
+        var p = new PositionHelper( _points );
+
+        var input = $"{{ \"type\": \"Feature\", \"geometry\": {{ \"type\": \"Point\", \"coordinates\": [{p.PS(0)}] }}, \"properties\": {{ \"name\": \"value\" }}, \"id\": 1 }}";
+
+        var feature = AssertRoundTrip<GeoFeature>( input );
+        var point = Assert.IsType<GeoPoint>( feature.Geometry );
+
+        Assert.Equal( p.P(0), point.Coordinates );
+        Assert.Equal( "value", feature.Properties["name"] );
+        Assert.Equal( 1, feature.Id );
+    }
+
+    [Theory]
+    [InlineData( 2 )]
+    [InlineData( 3 )]
     public void CanRoundTripFeatureCollection( int _points )
     {
         var p = new PositionHelper( _points );

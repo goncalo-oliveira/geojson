@@ -23,7 +23,7 @@ public sealed class GeoFeature : GeoObject
     { }
 
     public GeoFeature(
-        string? id,
+        object? id,
         GeoObject geometry,
         GeoBoundingBox? boundingBox,
         IReadOnlyDictionary<string, object?> properties,
@@ -34,6 +34,11 @@ public sealed class GeoFeature : GeoObject
         ArgumentNullException.ThrowIfNull( properties, nameof( properties ) );
         ArgumentNullException.ThrowIfNull( customProperties, nameof( customProperties ) );
 
+        if ( id != null && !( id is string || id is int || id is long ) )
+        {
+            throw new ArgumentException( "Id must be a string or a number." );
+        }
+
         Id = id;
         Geometry = geometry;
         Properties = properties;
@@ -42,7 +47,7 @@ public sealed class GeoFeature : GeoObject
     /// <summary>
     /// Gets the identifier.
     /// </summary>
-    public string? Id { get; }
+    public object? Id { get; }
 
     /// <summary>
     /// Gets the geometry.

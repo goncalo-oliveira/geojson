@@ -4,6 +4,7 @@
 // Copyright (c) Goncalo Oliveira. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -84,12 +85,12 @@ internal sealed class GeoJsonConverter : JsonConverter<GeoObject>
 
         if ( type == FeatureType )
         {
-            var id = GetOptionalProperty(element, IdProperty)?.GetString();
+            var id = GetOptionalProperty(element, IdProperty);
             var geometry = Read( GetRequiredProperty(element, GeometryProperty) );
             var properties = ReadFeatureProperties( element );
 
             return new GeoFeature(
-                id,
+                id != null ? ReadFeatureIdValue( id.Value ) : null,
                 geometry,
                 boundingBox,
                 properties,
@@ -223,23 +224,7 @@ internal sealed class GeoJsonConverter : JsonConverter<GeoObject>
             case JsonValueKind.String:
                 return element.GetString();
             case JsonValueKind.Number:
-                if (element.TryGetInt32(out int intValue))
-                {
-                    return intValue;
-                }
-                if (element.TryGetUInt32(out uint uintValue))
-                {
-                    return uintValue;
-                }
-                if (element.TryGetInt64(out long longValue))
-                {
-                    return longValue;
-                }
-                if ( element.TryGetUInt64( out ulong ulongValue ) )
-                {
-                    return ulongValue;
-                }
-                return element.GetDouble();
+                return ReadNumericValue( element );
             case JsonValueKind.True:
                 return true;
             case JsonValueKind.False:
@@ -298,6 +283,51 @@ internal sealed class GeoJsonConverter : JsonConverter<GeoObject>
         }
 
         return new GeoPosition(lon, lat, altitude);
+    }
+
+    private static object? ReadNumericValue( in JsonElement element )
+    {
+        if ( element.ValueKind != JsonValueKind.Number )
+        {
+            throw new JsonException( "Value must be a number" );
+        }
+
+        if ( element.TryGetInt32( out int intValue ) )
+        {
+            return intValue;
+        }
+
+        if ( element.TryGetUInt32( out uint uintValue ) )
+        {
+            return uintValue;
+        }
+
+        if ( element.TryGetInt64( out long longValue ) )
+        {
+            return longValue;
+        }
+
+        if ( element.TryGetUInt64( out ulong ulongValue ) )
+        {
+            return ulongValue;
+        }
+
+        return element.GetDouble();
+    }
+
+    private static object? ReadFeatureIdValue( in JsonElement element )
+    {
+        if ( element.ValueKind == JsonValueKind.Null )
+        {
+            return null;
+        }
+
+        return element switch
+        {
+            { ValueKind: JsonValueKind.String } => element.GetString()!,
+            { ValueKind: JsonValueKind.Number } => ReadNumericValue( element ),
+            _ => throw new JsonException( "Feature id must be a string or a number" )
+        };
     }
 
     internal static void Write(Utf8JsonWriter writer, GeoObject value)
@@ -418,9 +448,10 @@ internal sealed class GeoJsonConverter : JsonConverter<GeoObject>
 
             case GeoFeature feature:
                 WriteType(FeatureType);
-                if (feature.Id != null)
+                if ( feature.Id != null )
                 {
-                    writer.WriteString(IdProperty, feature.Id);
+                    writer.WritePropertyName( IdProperty );
+                    WriteAdditionalPropertyValue( writer, feature.Id );
                 }
 
                 writer.WritePropertyName(GeometryProperty);
