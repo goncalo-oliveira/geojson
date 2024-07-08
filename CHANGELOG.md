@@ -10,6 +10,12 @@
 
 ### Other Changes
 
+## 1.0.1
+
+### Bug Fixes
+
+- Feature deserialization fails if id is a number #1
+
 ## 1.0.0
 
 ### Features Added
