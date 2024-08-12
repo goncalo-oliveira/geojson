@@ -360,6 +360,22 @@ public class GeoJsonSerializationTests
         Assert.Equal("aaa_bbb", feature.Properties["aaa:bbb"]);
     }
 
+    [Fact]
+    public void DeserializeInvalidGeometry()
+    {
+        var input = "{ \"type\": \"Polygon\", \"coordinates\": [ [ [0, 0], [1, 1], [2, 2], [3, 3] ] ] }";
+
+        // deserialize as a base class
+        var obj = JsonSerializer.Deserialize<GeoObject>( input );
+
+        Assert.Null( obj );
+
+        // deserialize as a concrete class
+        obj = JsonSerializer.Deserialize<GeoPolygon>( input );        
+
+        Assert.Null( obj );
+    }
+
     private static T AssertRoundTrip<T>(string json) where T: GeoObject
     {
         var element = JsonDocument.Parse(json).RootElement;

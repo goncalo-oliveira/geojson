@@ -4,7 +4,6 @@
 // Copyright (c) Goncalo Oliveira. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -40,10 +39,20 @@ internal sealed class GeoJsonConverter : JsonConverter<GeoObject>
     }
 
     /// <inheritdoc />
-    public override GeoObject Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override GeoObject? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var document = JsonDocument.ParseValue(ref reader);
-        return Read(document.RootElement);
+
+        try
+        {
+            return Read( document.RootElement );
+        }
+        catch ( Exception )
+        {
+            document.Dispose();
+
+            return null;
+        }
     }
 
     /// <inheritdoc />

@@ -10,6 +10,12 @@
 
 ### Other Changes
 
+## 1.0.2
+
+### Breaking Changes
+
+- Deserialization of invalid GeoJSON objects now returns `null` instead of throwing an exception. This can still be overridden by setting `GeoJsonSerializer.ThrowOnDeserializationError` to `true`.
+
 ## 1.0.1
 
 ### Bug Fixes
