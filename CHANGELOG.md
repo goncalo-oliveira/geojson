@@ -1,6 +1,6 @@
 # Release History
 
-## 1.1.0 (unreleased)
+## 1.2.0 (unreleased)
 
 ### Features Added
 
@@ -9,6 +9,12 @@
 ### Bug Fixes
 
 ### Other Changes
+
+## 1.1.0
+
+### Other Changes
+
+- Added support for .NET 9
 
 ## 1.0.2
 
