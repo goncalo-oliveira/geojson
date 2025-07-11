@@ -128,7 +128,7 @@ public class GeoJsonSerializationTests
         var input = $" {{ \"type\": \"Polygon\", \"coordinates\": [ [ [{p.PS(0)}], [{p.PS(1)}], [{p.PS(2)}], [{p.PS(3)}], [{p.PS(4)}], [{p.PS(0)}] ] ] }}";
 
         var polygon = AssertRoundTrip<GeoPolygon>(input);
-        Assert.Equal(1, polygon.Rings.Count);
+        Assert.Single( polygon.Rings );
 
         Assert.True( new[]
         {
@@ -236,7 +236,7 @@ public class GeoJsonSerializationTests
 
         var polygon = multiPolygon.Polygons[0];
 
-        Assert.Equal(1, polygon.Rings.Count);
+        Assert.Single( polygon.Rings );
 
         Assert.True(new[]
         {
